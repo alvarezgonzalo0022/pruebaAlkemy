@@ -1,13 +1,15 @@
-import { CatsDTO } from "../dto/cats.dto";
-import { v4 as uuid } from 'uuid';
-import { BadGatewayException, BadRequestException, Injectable } from "@nestjs/common";
-import { UpdateCatDto } from "../dto/update-cat.dto";
+import { Injectable } from "@nestjs/common";
+import { Cat } from "../entity/cat.entity";
 
 @Injectable()
 export class CatRepository {
-    private catsArray = [];
+    private catsArray: Cat[];
 
-    getAll(): CatsDTO[] {
+    constructor() {
+        this.catsArray = [];
+    }
+
+    getAll(): Cat[] {
         return this.catsArray;
     }
 
@@ -15,23 +17,43 @@ export class CatRepository {
         return `Hi, i am a cat`;
     }
 
-    findOne(name: string): CatsDTO {
-        return this.catsArray.find(cat => cat.name === name);
+    findOne(name: string): Cat {
+        try {
+            return this.catsArray.find(cat => cat.name === name);
+        } catch (error) {
+            console.log(error);
+            throw new Error(error); 
+        }
     }
 
-    create(cat: CatsDTO) {
-        this.catsArray.push(cat);
+    create(cat: Cat): Cat {
+        try {
+            this.catsArray.push(cat);
+            return cat;          
+        } catch (error) {
+            console.log(error);
+            throw new Error(error); 
+        }
     }
 
-    update(newCat) {
-        this.catsArray = this.catsArray.map(cat => {
-            if (cat.id === newCat.id) {
-                cat = newCat;
-            }
-        })
+    update(newCat: Cat): Cat {
+        try {
+            this.catsArray = this.catsArray.filter(cat => cat.id !== newCat.id);
+            this.catsArray.push(newCat);
+            return newCat;          
+        } catch (error) {
+            console.log(error);
+            throw new Error(error); 
+        }
     }
     
-    deleteOne(id: string) {
-        this.catsArray = this.catsArray.filter(cat => cat.id !== id);
+    deleteOne(id: string): boolean {
+        try {
+            this.catsArray = this.catsArray.filter(cat => cat.id !== id);
+            return true;       
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
     }
 }

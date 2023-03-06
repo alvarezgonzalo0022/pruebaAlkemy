@@ -3,6 +3,7 @@ import { CatsDTO } from './dto/cats.dto';
 import { v4 as uuid } from 'uuid';
 import { UpdateCatDto } from './dto/update-cat.dto';
 import { CatRepository } from './repository/cat.repository';
+import { Cat } from './entity/cat.entity';
 
 @Injectable()
 export class CatsService {
@@ -11,7 +12,7 @@ export class CatsService {
         private readonly catRepository: CatRepository,
     ) {}
 
-    getAll(): CatsDTO[] {
+    getAll(): Cat[] {
         return this.catRepository.getAll();
     }
 
@@ -19,11 +20,11 @@ export class CatsService {
         return this.catRepository.sayHello();
     }
 
-    findOne(name: string): CatsDTO {
+    findOne(name: string): Cat {
         return this.catRepository.findOne(name);
     }
 
-    create(createCatDTO: CatsDTO): string {
+    create(createCatDTO: CatsDTO): Cat {
        const cat = {
         id: uuid(),
         name: createCatDTO.name,
@@ -31,11 +32,10 @@ export class CatsService {
         legs: createCatDTO.legs,
         weight: createCatDTO.weight,
     }
-    this.catRepository.create(cat);
-    return `Cat created with name ${createCatDTO.name}`;
+    return this.catRepository.create(cat);
     }
 
-    update(updateCatDTO: UpdateCatDto, id: string) {
+    update(updateCatDTO: UpdateCatDto, id: string): Cat {
         const newCat = {
             id: id,
             name: updateCatDTO.name,
@@ -45,7 +45,8 @@ export class CatsService {
         }
         return this.catRepository.update(newCat);
     }
-    deleteOne(id: string) {
-        return this.catRepository.deleteOne(id);
+
+    deleteOne(id: string): string {
+        return this.catRepository.deleteOne(id) ? `Cat with id: ${id} successfully deleted` : `Cat with id: ${id} not found`;
     }
 }
