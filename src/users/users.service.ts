@@ -6,15 +6,19 @@ export class UsersService {
 
     private userArray: UsersDTO[] = [];
 
-    getAll() {
+    getAll(): UsersDTO[] {
         return this.userArray;
     }
 
-    sayHello() {
+    sayHello(): string {
         return `Hi, i am an user`;
     }
 
-    create(createUserDTO: UsersDTO) {
+    findOne(name: string): UsersDTO {
+        return this.userArray.find(user => user.name === name);
+    }
+
+    create(createUserDTO: UsersDTO): string {
         this.userArray.push(createUserDTO);
         return `User created with name ${createUserDTO.name}`
     }

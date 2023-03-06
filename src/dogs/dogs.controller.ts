@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, } from "@nestjs/common";
 import { DogsService } from "./dogs.service";
 import { DogsDTO } from "./dto/dogs.dto";
 
@@ -10,17 +10,22 @@ export class DogController {
     ) {}
 
     @Get()
-    getAll() {
+    getAll(): DogsDTO[] {
         return this.dogsService.getAll();
     }
 
     @Get("/hello")
-    sayHello() {
+    sayHello(): string {
         return this.dogsService.sayHello();
     }
 
+    @Get(':name')
+    findOne(@Param('name') name: string): DogsDTO {
+      return this.dogsService.findOne(name);
+    }
+
     @Post()
-    create(@Body() createDogDTO: DogsDTO) {
+    create(@Body() createDogDTO: DogsDTO): string {
         return this.dogsService.create(createDogDTO);
     }
 

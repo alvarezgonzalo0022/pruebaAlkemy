@@ -7,16 +7,20 @@ export class PostsService {
 
     private postsArray: PostsDTO[] = [];
 
-    getAll() {
+    getAll(): PostsDTO[] {
         return this.postsArray;
     }
 
-    sayHello() {
+    sayHello(): string {
         return `Hi, i am a post`;
     }
 
-    create(createPostDTO: PostsDTO) {
+    findOne(title: string): PostsDTO {
+        return this.postsArray.find(post => post.title === title);
+    }
+
+    create(createPostDTO: PostsDTO): string {
         this.postsArray.push(createPostDTO);
-        return `Post created with name ${createPostDTO.title}`
+        return `Post created with title ${createPostDTO.title}`
     }
 }
