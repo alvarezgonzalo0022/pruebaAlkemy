@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CatsDTO } from './dto/cats.dto';
 import { v4 as uuid } from 'uuid';
 import { UpdateCatDto } from './dto/update-cat.dto';
@@ -20,12 +20,12 @@ export class CatsService {
         return this.catRepository.sayHello();
     }
 
-    findOne(name: string): Cat {
-        return this.catRepository.findOne(name);
+    findOne(id: string): Cat {
+        return this.catRepository.findOne(id);
     }
 
     create(createCatDTO: CatsDTO): Cat {
-       const cat = {
+       const cat: Cat = {
         id: uuid(),
         name: createCatDTO.name,
         age: createCatDTO.age,
@@ -36,7 +36,7 @@ export class CatsService {
     }
 
     update(updateCatDTO: UpdateCatDto, id: string): Cat {
-        const newCat = {
+        const newCat: Cat = {
             id: id,
             name: updateCatDTO.name,
             age: updateCatDTO.age,

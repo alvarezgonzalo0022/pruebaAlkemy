@@ -1,26 +1,55 @@
 import { Injectable } from '@nestjs/common';
 import { PostsDTO } from './dto/posts.dto';
+import { Post } from './entity/post.entity';
+import { PostRepository } from './repository/post.repository';
+import { v4 as uuid } from 'uuid';
+import { UpdatePostsDTO } from './dto/update-post.dto';
 
 @Injectable()
 export class PostsService {
 
+    constructor(
+        private readonly postsRepository: PostRepository,
+    ) {}
 
-    private postsArray: PostsDTO[] = [];
-
-    getAll(): PostsDTO[] {
-        return this.postsArray;
+    getAll(): Post[] {
+        return this.postsRepository.getAll();
     }
 
     sayHello(): string {
-        return `Hi, i am a post`;
+        return this.postsRepository.sayHello();
     }
 
-    findOne(title: string): PostsDTO {
-        return this.postsArray.find(post => post.title === title);
+    findOne(id: string): Post {
+        return this.postsRepository.findOne(id);
     }
 
-    create(createPostDTO: PostsDTO): string {
-        this.postsArray.push(createPostDTO);
-        return `Post created with title ${createPostDTO.title}`
+    create(createPostDTO: PostsDTO): Post {
+
+        const post: Post = {
+            id: uuid(),
+            title: createPostDTO.title,
+            author: createPostDTO.author,
+            description: createPostDTO.description,
+        }
+
+        return this.postsRepository.create(post);
+
+    }
+
+    update(updatePostDTO: UpdatePostsDTO, id: string): Post {
+
+        const newPost: Post = {
+            id: id,
+            title: updatePostDTO.title,
+            author: updatePostDTO.author,
+            description: updatePostDTO.description,
+        }
+
+        return this.postsRepository.update(newPost);
+    }
+
+    deleteOne(id: string): string {
+        return this.postsRepository.deleteOne(id) ? `Post with id: ${id} successfully deleted` : `Post with id: ${id} not found`;
     }
 }

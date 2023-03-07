@@ -21,9 +21,9 @@ export class CatController {
         return this.catsService.sayHello();
     }
 
-    @Get(':name')
-    findOne(@Param('name') name: string): Cat {
-      return this.catsService.findOne(name);
+    @Get(':id')
+    findOne(@Param('id') id: string): Cat {
+      return this.catsService.findOne(id);
     }
 
     @Post()

@@ -1,25 +1,50 @@
 import { Injectable } from '@nestjs/common';
 import { UsersDTO } from './dto/users.dto';
+import { User } from './entity/user.entity';
+import { UserRepository } from './repository/user.repository';
+import { v4 as uuid } from 'uuid';
+import { UpdateUserDTO } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
 
-    private userArray: UsersDTO[] = [];
+    constructor(
+        private readonly userRepository: UserRepository,
+    ) {}
 
-    getAll(): UsersDTO[] {
-        return this.userArray;
+    getAll(): User[] {
+        return this.userRepository.getAll();
     }
 
     sayHello(): string {
-        return `Hi, i am an user`;
+        return this.userRepository.sayHello();
     }
 
-    findOne(name: string): UsersDTO {
-        return this.userArray.find(user => user.name === name);
+    findOne(id: string): User {
+        return this.userRepository.findOne(id);
     }
 
-    create(createUserDTO: UsersDTO): string {
-        this.userArray.push(createUserDTO);
-        return `User created with name ${createUserDTO.name}`
+    create(createUserDTO: UsersDTO): User {
+        const user: User = {
+            id: uuid(),
+            name: createUserDTO.name,
+            email: createUserDTO.email,
+            age: createUserDTO.age,
+        }
+        return this.userRepository.create(user);
+    }
+
+    update(updateUserDTO: UpdateUserDTO, id: string): User {
+        const newUser: User = {
+            id: id,
+            name: updateUserDTO.name,
+            email: updateUserDTO.email,
+            age: updateUserDTO.age,
+        }
+        return this.userRepository.update(newUser);
+    }
+
+    deleteOne(id: string): string {
+        return this.userRepository.deleteOne(id) ? `User with id: ${id} successfully deleted` : `User with id: ${id} not found`;
     }
 }

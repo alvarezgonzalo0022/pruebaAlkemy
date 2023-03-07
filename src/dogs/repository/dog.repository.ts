@@ -1,46 +1,46 @@
 import { Injectable } from "@nestjs/common";
-import { Cat } from "../entity/cat.entity";
+import { Dog } from "../entity/dog.entity";
 
 @Injectable()
-export class CatRepository {
-    private catsArray: Cat[];
+export class DogRepository {
+    private dogsArray: Dog[];
 
     constructor() {
-        this.catsArray = [];
+        this.dogsArray = [];
     }
 
-    getAll(): Cat[] {
-        return this.catsArray;
+    getAll(): Dog[] {
+        return this.dogsArray;
     }
 
     sayHello(): string {
-        return `Hi, i am a cat`;
+        return `Hi, i am a dog`;
     }
 
-    findOne(id: string): Cat {
+    findOne(id: string): Dog {
         try {
-            return this.catsArray.find(cat => cat.id === id);
+            return this.dogsArray.find(dog => dog.id === id);
         } catch (error) {
             console.log(error);
             throw new Error(error); 
         }
     }
 
-    create(cat: Cat): Cat {
+    create(dog: Dog): Dog {
         try {
-            this.catsArray.push(cat);
-            return cat;          
+            this.dogsArray.push(dog);
+            return dog;          
         } catch (error) {
             console.log(error);
             throw new Error(error); 
         }
     }
 
-    update(newCat: Cat): Cat {
+    update(newDog: Dog): Dog {
         try {
-            const index = this.catsArray.findIndex(cat => cat.id === newCat.id);
-            this.catsArray[index] = newCat;
-            return newCat;           
+            const index = this.dogsArray.findIndex(dog => dog.id === newDog.id);
+            this.dogsArray[index] = newDog;
+            return newDog;          
         } catch (error) {
             console.log(error);
             throw new Error(error); 
@@ -49,7 +49,7 @@ export class CatRepository {
     
     deleteOne(id: string): boolean {
         try {
-            this.catsArray = this.catsArray.filter(cat => cat.id !== id);
+            this.dogsArray = this.dogsArray.filter(dog => dog.id !== id);
             return true;       
         } catch (error) {
             console.log(error);

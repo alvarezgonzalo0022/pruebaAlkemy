@@ -1,25 +1,54 @@
 import { Injectable } from '@nestjs/common';
 import { DogsDTO } from './dto/dogs.dto';
+import { Dog } from './entity/dog.entity';
+import { v4 as uuid } from 'uuid';
+import { UpdateDogDTO } from './dto/update-dog.dto';
+import { DogRepository } from './repository/dog.repository';
 
 @Injectable()
 export class DogsService {
 
-    private dogsArray: DogsDTO[] = [];
+    constructor(
+        private readonly dogRepository: DogRepository,
+    ) {}
 
-    getAll(): DogsDTO[] {
-        return this.dogsArray;
+    getAll(): Dog[] {
+        return this.dogRepository.getAll();
     }
 
     sayHello(): string {
-        return `Hi, i am a dog`;
+        return this.dogRepository.sayHello();
     }
 
-    findOne(name: string): DogsDTO {
-        return this.dogsArray.find(dog => dog.name === name);
+    findOne(id: string): Dog {
+        return this.dogRepository.findOne(id);
     }
 
-    create(createDogDTO: DogsDTO): string {
-        this.dogsArray.push(createDogDTO);
-        return `Dog created with name ${createDogDTO.name}`
+    create(createDogDTO: DogsDTO): Dog {
+        const dog: Dog = {
+            id: uuid(),
+            name: createDogDTO.name,
+            age: createDogDTO.age,
+            legs: createDogDTO.legs,
+            weight: createDogDTO.weight
+        }
+    
+        return this.dogRepository.create(dog);
+    }
+
+    update(updateDogDTO: UpdateDogDTO, id: string): Dog {
+        const newDog: Dog = {
+            id: id,
+            name: updateDogDTO.name,
+            age: updateDogDTO.age,
+            legs: updateDogDTO.legs,
+            weight: updateDogDTO.weight
+        }
+
+        return this.dogRepository.update(newDog);
+    }
+
+    deleteOne(id: string): string {
+        return this.dogRepository.deleteOne(id) ? `Dog with id: ${id} successfully deleted` : `Dog with id: ${id} not found`;
     }
 }
