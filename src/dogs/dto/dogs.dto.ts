@@ -18,4 +18,7 @@ export class DogsDTO {
     @IsPositive()
     weight: number;
 
+    @IsString()
+    userID: string;
+
 }

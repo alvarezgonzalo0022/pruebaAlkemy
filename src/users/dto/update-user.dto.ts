@@ -1,15 +1,19 @@
-import { IsEmail, IsNumber, IsPositive, IsString, Min } from "class-validator";
+import { IsArray, IsEmail, IsNumber, IsOptional, IsPositive, IsString, Min } from "class-validator";
+import { Dog } from "src/dogs/entity/dog.entity";
 
 export class UpdateUserDTO {
 
     @IsString()
-    name: string;
+    @IsOptional()
+    name?: string;
 
     @IsNumber()
     @IsPositive()
-    age: number;
+    @IsOptional()
+    age?: number;
 
     @IsEmail()
-    email: string;
+    @IsOptional()
+    email?: string;
 
 }

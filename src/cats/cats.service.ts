@@ -1,52 +1,46 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CatsDTO } from './dto/cats.dto';
-import { v4 as uuid } from 'uuid';
 import { UpdateCatDto } from './dto/update-cat.dto';
-import { CatRepository } from './repository/cat.repository';
 import { Cat } from './entity/cat.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CatsService {
 
     constructor(
-        private readonly catRepository: CatRepository,
+        @InjectRepository(Cat)
+        private readonly catRepository: Repository<Cat>,
     ) {}
 
-    getAll(): Cat[] {
-        return this.catRepository.getAll();
+    async getAll(): Promise<Cat[]> {
+        return await this.catRepository.find();
     }
 
-    sayHello(): string {
-        return this.catRepository.sayHello();
+    async findOne(id: string) {
+        return this.catRepository.findOneBy({id});
     }
 
-    findOne(id: string): Cat {
-        return this.catRepository.findOne(id);
+    async create(createCatDTO: CatsDTO) {
+        const cat = this.catRepository.create(createCatDTO);
+        return await this.catRepository.save(cat);
     }
 
-    create(createCatDTO: CatsDTO): Cat {
-       const cat: Cat = {
-        id: uuid(),
-        name: createCatDTO.name,
-        age: createCatDTO.age,
-        legs: createCatDTO.legs,
-        weight: createCatDTO.weight,
-    }
-    return this.catRepository.create(cat);
-    }
+    async update(updateCatDTO: UpdateCatDto, id: string) {
 
-    update(updateCatDTO: UpdateCatDto, id: string): Cat {
-        const newCat: Cat = {
-            id: id,
-            name: updateCatDTO.name,
-            age: updateCatDTO.age,
-            legs: updateCatDTO.legs,
-            weight: updateCatDTO.weight,
+        const cat = this.findOne(id);
+
+        if(!cat) throw new BadRequestException('Cat not found');
+
+        const newCat = {
+            id,
+            ...cat,
+            ...updateCatDTO
         }
-        return this.catRepository.update(newCat);
+        return await this.catRepository.save(newCat);
     }
 
-    deleteOne(id: string): string {
-        return this.catRepository.deleteOne(id) ? `Cat with id: ${id} successfully deleted` : `Cat with id: ${id} not found`;
+    deleteOne(id: string) {
+        return this.catRepository.delete(id);
     }
 }

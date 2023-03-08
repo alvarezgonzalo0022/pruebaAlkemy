@@ -3,8 +3,9 @@ import { CatsModule } from './cats/cats.module';
 import { DogsModule } from './dogs/dogs.module';
 import { PostsModule } from './posts/posts.module';
 import { UsersModule } from './users/users.module';
+import { DatabaseModule } from './common/database/database.module';
 
 @Module({
-  imports: [CatsModule, DogsModule, PostsModule, UsersModule],
+  imports: [DatabaseModule, CatsModule, DogsModule, PostsModule, UsersModule],
 })
 export class AppModule {}

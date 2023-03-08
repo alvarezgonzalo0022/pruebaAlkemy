@@ -1,4 +1,5 @@
-import { IsEmail, IsNumber, IsPositive, IsString, Min } from "class-validator";
+import { IsArray, IsEmail, IsIn, IsNumber, IsOptional, IsPositive, IsString, Min } from "class-validator";
+import { Dog } from "src/dogs/entity/dog.entity";
 
 export class UsersDTO {
 
@@ -12,4 +13,7 @@ export class UsersDTO {
     @IsEmail()
     email: string;
 
+    @IsArray()
+    @IsOptional()
+    dogs?: Dog[];
 }

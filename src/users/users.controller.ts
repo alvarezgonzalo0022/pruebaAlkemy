@@ -12,32 +12,27 @@ export class UserController {
     ) {}
 
     @Get()
-    getAll(): User[] {
+    getAll() {
         return this.userService.getAll();
     }
 
-    @Get("/hello")
-    sayHello(): string {
-        return this.userService.sayHello();
-    }
-
     @Get(':id')
-    findOne(@Param('id') id: string): User {
+    findOne(@Param('id') id: string) {
       return this.userService.findOne(id);
     }
 
     @Post()
-    create(@Body() createUserDTO: UsersDTO): User {
+    create(@Body() createUserDTO: UsersDTO) {
         return this.userService.create(createUserDTO);
     }
 
     @Patch(':id')
-    update(@Body() updateUserDTO: UpdateUserDTO, @Param('id') id: string): User {
+    update(@Body() updateUserDTO: UpdateUserDTO, @Param('id') id: string) {
         return this.userService.update(updateUserDTO, id);
     }
 
     @Delete(':id')
-    deleteOne(@Param('id') id: string): string {
+    deleteOne(@Param('id') id: string) {
       return this.userService.deleteOne(id);
     }
 

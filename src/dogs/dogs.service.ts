@@ -1,54 +1,65 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { DogsDTO } from './dto/dogs.dto';
 import { Dog } from './entity/dog.entity';
-import { v4 as uuid } from 'uuid';
 import { UpdateDogDTO } from './dto/update-dog.dto';
-import { DogRepository } from './repository/dog.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/entity/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class DogsService {
 
     constructor(
-        private readonly dogRepository: DogRepository,
+        @InjectRepository(Dog)
+        private readonly dogRepository: Repository<Dog>,
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
     ) {}
 
-    getAll(): Dog[] {
-        return this.dogRepository.getAll();
+    async getAll() {
+        return await this.dogRepository.find();
     }
 
-    sayHello(): string {
-        return this.dogRepository.sayHello();
+    async findOne(id: string) {
+        return await this.dogRepository.findOneBy({id});
     }
 
-    findOne(id: string): Dog {
-        return this.dogRepository.findOne(id);
-    }
+    async create(createDogDTO: DogsDTO) {
 
-    create(createDogDTO: DogsDTO): Dog {
-        const dog: Dog = {
-            id: uuid(),
-            name: createDogDTO.name,
-            age: createDogDTO.age,
-            legs: createDogDTO.legs,
-            weight: createDogDTO.weight
+        const { userID, ...rest } = createDogDTO;
+
+        const userSearch = await this.userRepository.findOneBy({id: userID});
+
+        if(!userSearch) throw new BadRequestException('User not found');
+
+        const dogToSave = {
+            ...rest,
+            user: userSearch
         }
+
+        const dog = this.dogRepository.create(dogToSave);
     
-        return this.dogRepository.create(dog);
+        return await this.dogRepository.save(dog);
     }
 
-    update(updateDogDTO: UpdateDogDTO, id: string): Dog {
-        const newDog: Dog = {
-            id: id,
-            name: updateDogDTO.name,
-            age: updateDogDTO.age,
-            legs: updateDogDTO.legs,
-            weight: updateDogDTO.weight
+    async update(updateDogDTO: UpdateDogDTO, id: string) {
+    
+        const dog = await this.findOne(id);
+        const user = await this.userRepository.findOneBy({id: updateDogDTO.userID});
+
+        if(!dog || !user) throw new BadRequestException('Dog or User not found');
+
+        const newDog = {
+            id,
+            ...dog,
+            ...updateDogDTO,
+            user: user,
         }
 
-        return this.dogRepository.update(newDog);
+        return await this.dogRepository.save(newDog);
     }
 
-    deleteOne(id: string): string {
-        return this.dogRepository.deleteOne(id) ? `Dog with id: ${id} successfully deleted` : `Dog with id: ${id} not found`;
+    deleteOne(id: string) {
+        return this.dogRepository.delete(id);
     }
 }

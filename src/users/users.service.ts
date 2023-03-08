@@ -1,50 +1,66 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersDTO } from './dto/users.dto';
 import { User } from './entity/user.entity';
-import { UserRepository } from './repository/user.repository';
-import { v4 as uuid } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Dog } from 'src/dogs/entity/dog.entity';
 import { UpdateUserDTO } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
 
     constructor(
-        private readonly userRepository: UserRepository,
+        @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
+        @InjectRepository(Dog)
+        private readonly dogRepository: Repository<Dog>,
     ) {}
 
-    getAll(): User[] {
-        return this.userRepository.getAll();
+    async getAll() {
+        return await this.userRepository.find();
     }
 
-    sayHello(): string {
-        return this.userRepository.sayHello();
+    async findOne(id: string) {
+        return await this.userRepository.findOneBy({id});
     }
 
-    findOne(id: string): User {
-        return this.userRepository.findOne(id);
-    }
+    async create(createUserDTO: UsersDTO) {
+        try {
+            
+            const { dogs = [], ...userDetails } = createUserDTO;
 
-    create(createUserDTO: UsersDTO): User {
-        const user: User = {
-            id: uuid(),
-            name: createUserDTO.name,
-            email: createUserDTO.email,
-            age: createUserDTO.age,
+            const user = this.userRepository.create({
+                ...userDetails,
+                dogs: dogs.map((dog) => this.dogRepository.create(dog))
+            });
+            await this.dogRepository.save(user.dogs);
+
+            await this.userRepository.save(user);
+            return user;
+
+        } catch (error) {
+            console.log(error);
+            
         }
-        return this.userRepository.create(user);
     }
 
-    update(updateUserDTO: UpdateUserDTO, id: string): User {
-        const newUser: User = {
-            id: id,
-            name: updateUserDTO.name,
-            email: updateUserDTO.email,
-            age: updateUserDTO.age,
+    async update(updateUserDTO: UpdateUserDTO, id: string) {
+
+        const user = this.findOne(id);
+
+        if (!user) throw new BadRequestException('User not found');
+
+        const newUser = {
+            id,
+            ...user,
+            ...updateUserDTO
         }
-        return this.userRepository.update(newUser);
+
+        return this.userRepository.save(newUser);
+
     }
 
-    deleteOne(id: string): string {
-        return this.userRepository.deleteOne(id) ? `User with id: ${id} successfully deleted` : `User with id: ${id} not found`;
+    deleteOne(id: string) {
+        return this.userRepository.delete(id);
     }
 }

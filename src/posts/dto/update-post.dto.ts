@@ -3,13 +3,15 @@ import { IsOptional, IsString, Min } from "class-validator";
 export class UpdatePostsDTO {
 
     @IsString()
-    title: string;
+    @IsOptional()
+    title?: string;
 
+    @IsOptional()
     @IsString()
-    description: string;
+    description?: string;
 
-
+    @IsOptional()
     @IsString()
-    author: string;
+    author?: string;
 
 }

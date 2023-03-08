@@ -2,18 +2,22 @@ import { IsNumber, IsOptional, IsPositive, IsString, Min } from "class-validator
 
 export class UpdateCatDto {
   @IsString()
-  name: string;
+  @IsOptional()
+  name?: string;
 
   @IsNumber()
   @IsPositive()
-  age: number;
+  @IsOptional()
+  age?: number;
 
   @IsNumber()
   @IsPositive()
   @Min(1)
-  legs: number;
+  @IsOptional()
+  legs?: number;
 
   @IsNumber()
   @IsPositive()
-  weight: number;
+  @IsOptional()
+  weight?: number;
 }

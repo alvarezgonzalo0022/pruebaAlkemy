@@ -12,32 +12,27 @@ export class DogController {
     ) {}
 
     @Get()
-    getAll(): Dog[] {
+    getAll() {
         return this.dogsService.getAll();
     }
 
-    @Get("/hello")
-    sayHello(): string {
-        return this.dogsService.sayHello();
-    }
-
     @Get(':id')
-    findOne(@Param('id') id: string): Dog {
+    findOne(@Param('id') id: string) {
       return this.dogsService.findOne(id);
     }
 
     @Post()
-    create(@Body() createDogDTO: DogsDTO): Dog {
+    create(@Body() createDogDTO: DogsDTO) {
         return this.dogsService.create(createDogDTO);
     }
 
     @Patch(':id')
-    update(@Body() updateDogDTO: UpdateDogDTO, @Param('id', ParseUUIDPipe) id: string): Dog {
+    update(@Body() updateDogDTO: UpdateDogDTO, @Param('id', ParseUUIDPipe) id: string) {
         return this.dogsService.update(updateDogDTO, id);
     }
 
     @Delete(':id')
-    deleteOne(@Param('id', ParseUUIDPipe) id: string): string {
+    deleteOne(@Param('id', ParseUUIDPipe) id: string) {
       return this.dogsService.deleteOne(id);
     }
 

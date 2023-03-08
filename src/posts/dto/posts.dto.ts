@@ -8,7 +8,6 @@ export class PostsDTO {
     @IsString()
     description: string;
 
-
     @IsString()
     author: string;
 
