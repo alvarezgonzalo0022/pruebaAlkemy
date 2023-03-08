@@ -12,28 +12,28 @@ export class PostController {
     ) {}
 
     @Get()
-    getAll() {
+    getAll(): Promise<Posts[]> {
         return this.postsService.getAll();
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
+    findOne(@Param('id') id: string): Promise<Posts> {
       return this.postsService.findOne(id);
     }
 
     @Post()
-    create(@Body() createPOSTDTO: PostsDTO) {
+    create(@Body() createPOSTDTO: PostsDTO): Promise<Posts> {
         return this.postsService.create(createPOSTDTO);
     }
 
     @Patch(':id')
-    update(@Body() updatePOSTDTO: UpdatePostsDTO, @Param('id') id: string) {
+    update(@Body() updatePOSTDTO: UpdatePostsDTO, @Param('id') id: string): Promise<Posts> {
         return this.postsService.update(updatePOSTDTO, id);
     }
 
     @Delete(':id')
-    deleteOne(@Param('id') id: string) {
-        return this.postsService.deleteOne(id);
+    deleteOne(@Param('id') id: string): void {
+        this.postsService.deleteOne(id);
     }
 
 }

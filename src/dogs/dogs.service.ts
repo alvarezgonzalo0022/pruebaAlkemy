@@ -16,15 +16,15 @@ export class DogsService {
         private readonly userRepository: Repository<User>,
     ) {}
 
-    async getAll() {
+    async getAll(): Promise<Dog[]> {
         return await this.dogRepository.find();
     }
 
-    async findOne(id: string) {
+    async findOne(id: string): Promise<Dog> {
         return await this.dogRepository.findOneBy({id});
     }
 
-    async create(createDogDTO: DogsDTO) {
+    async create(createDogDTO: DogsDTO): Promise<Dog> {
 
         const { userID, ...rest } = createDogDTO;
 
@@ -42,7 +42,7 @@ export class DogsService {
         return await this.dogRepository.save(dog);
     }
 
-    async update(updateDogDTO: UpdateDogDTO, id: string) {
+    async update(updateDogDTO: UpdateDogDTO, id: string): Promise<Dog> {
     
         const dog = await this.findOne(id);
         const user = await this.userRepository.findOneBy({id: updateDogDTO.userID});
@@ -59,7 +59,7 @@ export class DogsService {
         return await this.dogRepository.save(newDog);
     }
 
-    deleteOne(id: string) {
-        return this.dogRepository.delete(id);
+    async deleteOne(id: string): Promise<void> {
+        await this.dogRepository.delete(id);
     }
 }

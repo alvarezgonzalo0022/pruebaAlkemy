@@ -16,24 +16,23 @@ export class UsersService {
         private readonly dogRepository: Repository<Dog>,
     ) {}
 
-    async getAll() {
+    async getAll(): Promise<User[]> {
         return await this.userRepository.find();
     }
 
-    async findOne(id: string) {
+    async findOne(id: string): Promise<User> {
         return await this.userRepository.findOneBy({id});
     }
 
-    async create(createUserDTO: UsersDTO) {
+    async create(createUserDTO: UsersDTO): Promise<User> {
         try {
             
             const { dogs = [], ...userDetails } = createUserDTO;
 
             const user = this.userRepository.create({
                 ...userDetails,
-                dogs: dogs.map((dog) => this.dogRepository.create(dog))
+                dogs: dogs.map((dog) => this.dogRepository.create({name: dog.name, age: dog.age, weight: dog.weight, legs: dog.legs}))
             });
-            await this.dogRepository.save(user.dogs);
 
             await this.userRepository.save(user);
             return user;
@@ -44,7 +43,7 @@ export class UsersService {
         }
     }
 
-    async update(updateUserDTO: UpdateUserDTO, id: string) {
+    async update(updateUserDTO: UpdateUserDTO, id: string): Promise<User> {
 
         const user = this.findOne(id);
 
@@ -60,7 +59,7 @@ export class UsersService {
 
     }
 
-    deleteOne(id: string) {
-        return this.userRepository.delete(id);
+    async deleteOne(id: string): Promise<void> {
+        await this.userRepository.delete(id);
     }
 }

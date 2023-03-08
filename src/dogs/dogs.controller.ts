@@ -17,23 +17,23 @@ export class DogController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
+    findOne(@Param('id') id: string): Promise<Dog> {
       return this.dogsService.findOne(id);
     }
 
     @Post()
-    create(@Body() createDogDTO: DogsDTO) {
+    create(@Body() createDogDTO: DogsDTO): Promise<Dog> {
         return this.dogsService.create(createDogDTO);
     }
 
     @Patch(':id')
-    update(@Body() updateDogDTO: UpdateDogDTO, @Param('id', ParseUUIDPipe) id: string) {
+    update(@Body() updateDogDTO: UpdateDogDTO, @Param('id', ParseUUIDPipe) id: string): Promise<Dog> {
         return this.dogsService.update(updateDogDTO, id);
     }
 
     @Delete(':id')
-    deleteOne(@Param('id', ParseUUIDPipe) id: string) {
-      return this.dogsService.deleteOne(id);
+    deleteOne(@Param('id', ParseUUIDPipe) id: string): void {
+      this.dogsService.deleteOne(id);
     }
 
 

@@ -12,28 +12,28 @@ export class CatController {
     ) {}
 
     @Get()
-    getAll() {
+    getAll(): Promise<Cat[]> {
         return this.catsService.getAll();
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
+    findOne(@Param('id') id: string): Promise<Cat> {
       return this.catsService.findOne(id);
     }
 
     @Post()
-    create(@Body() createCatDTO: CatsDTO) {
+    create(@Body() createCatDTO: CatsDTO): Promise<Cat> {
         return this.catsService.create(createCatDTO);
     }
 
     @Patch(':id')
-    update(@Body() updateCatDTO: UpdateCatDto, @Param('id', ParseUUIDPipe) id: string) {
+    update(@Body() updateCatDTO: UpdateCatDto, @Param('id', ParseUUIDPipe) id: string): Promise<Cat> {
         return this.catsService.update(updateCatDTO, id);
     }
 
     @Delete(':id')
-    deleteOne(@Param('id', ParseUUIDPipe) id: string) {
-      return this.catsService.deleteOne(id);
+    deleteOne(@Param('id', ParseUUIDPipe) id: string): void {
+      this.catsService.deleteOne(id);
     }
 
 }

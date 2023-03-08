@@ -17,16 +17,16 @@ export class CatsService {
         return await this.catRepository.find();
     }
 
-    async findOne(id: string) {
+    async findOne(id: string): Promise<Cat> {
         return this.catRepository.findOneBy({id});
     }
 
-    async create(createCatDTO: CatsDTO) {
+    async create(createCatDTO: CatsDTO): Promise<Cat> {
         const cat = this.catRepository.create(createCatDTO);
         return await this.catRepository.save(cat);
     }
 
-    async update(updateCatDTO: UpdateCatDto, id: string) {
+    async update(updateCatDTO: UpdateCatDto, id: string): Promise<Cat> {
 
         const cat = this.findOne(id);
 
@@ -40,7 +40,7 @@ export class CatsService {
         return await this.catRepository.save(newCat);
     }
 
-    deleteOne(id: string) {
-        return this.catRepository.delete(id);
+    async deleteOne(id: string): Promise<void> {
+        await this.catRepository.delete(id);
     }
 }
