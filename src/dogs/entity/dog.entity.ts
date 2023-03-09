@@ -19,7 +19,7 @@ export class Dog {
     @Column('int')
     weight: number;
 
-    @ManyToOne(() => User, (user) => user.dogs, { nullable: true })
+    @ManyToOne(() => User, (user) => user.dogs, { nullable: true, onDelete: 'CASCADE' })
     user: User;
     
 }

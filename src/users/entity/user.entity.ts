@@ -16,7 +16,7 @@ export class User {
     @Column('text')
     email: string;
 
-    @OneToMany(type => Dog, dog => dog.user, { cascade: true })
+    @OneToMany(type => Dog, dog => dog.user)
     dogs: Dog[];
 
 }
